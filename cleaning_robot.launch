@@ -1,0 +1,5 @@
+<launch>
+  <param name="input" value="1.0"/>
+  <node name="turtlesim" pkg="turtlesim" type="turtlesim_node" />
+  <node name="turtlesim_cleaning_bot" pkg="ros_practice" type="cleaning_robot.py" />
+</launch>
