@@ -5,7 +5,7 @@ from geometry_msgs.msg import Twist
 from turtlesim.msg import Pose
 import math
 import time
-
+import sys
 
 def poseCallback(position_msg):
 	global x, y, theta 
@@ -109,7 +109,7 @@ def spiral_motion(velocity_pub, wk, rk):
 		velocity_msg.linear.x = rk
 		velocity_msg.angular.z = wk
 		velocity_pub.publish(velocity_msg)
-		rk = rk + 1
+		rk = rk + 0.1
 		loop_rate.sleep()
 	velocity_msg.linear.x = 0.0
 	velocity_msg.angular.z = 0.0
@@ -119,7 +119,7 @@ def grid_cleaning(velocity_pub):
 	global x,y
 	go_to_goal(velocity_pub, 1.0, 1.0)
 	
-	while (x<10.5 and y<10.5):
+	while (x<10 and y<10):
 		set_desired_orientation(velocity_pub, 30, 90)
 		move_straight(velocity_pub, 1.0, 9.0, True)
 		rotate(velocity_pub, 30, 90, True)
@@ -137,13 +137,26 @@ if __name__ == "__main__":
 		pose_sub = rospy.Subscriber('/turtle1/pose', Pose, poseCallback)
 		velocity_pub = rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size = 10)
 		time.sleep(2)
-		
+				
 		#move_straight(velocity_pub, 1.0, 3.0, True)
 		#rotate(velocity_pub, 30, 90, True)
 		#go_to_goal(velocity_pub, 8.0, 1.0)
 		#set_desired_orientation(velocity_pub, 30, 180)
 		#spiral_motion(velocity_pub, 20, 0)
-		grid_cleaning(velocity_pub)
+		#grid_cleaning(velocity_pub)
+				
+#		if len(sys.argv) == 2:
+#		    choice = int(sys.argv[1])
+#		else:
+#		    print ("%s choice"%sys.argv[0])
+#		    sys.exit(1)
+
+		choice = rospy.get_param("input")
+					    
+		if choice == 1:
+			spiral_motion(velocity_pub, 5, 0)
+		elif choice == 2:
+			grid_cleaning(velocity_pub)
 		
 	except rospy.ROSInterruptException:
 		rospy.loginfo("node terminated.")
