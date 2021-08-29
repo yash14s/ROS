@@ -1,0 +1,7 @@
+Obstacle avoidance bot using turtlebot3 in gazebo and visualised using rviz
+obstacle_avoidance_P.py uses proportional controller for smooth movement
+
+Usage:
+1. $ roslaunch turtlebot3_gazebo turtlebot3_world.launch
+2. $ roslaunch turtlebot3_gazebo turtlebot3_gazebo_rviz.launch
+3. $ rosrun ros_practice obstacle_avoidance_P.py
