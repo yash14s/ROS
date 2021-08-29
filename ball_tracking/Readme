@@ -1,1 +1,12 @@
 Link to video: https://github.com/aniskoubaa/ros_essentials_cpp/tree/master/src/topic03_perception/video 
+
+To perform ball tracking in real time: 
+1. Start the picamera driver- $ rosrun usb_cam usb_cam_node _pixel_format:=yuyv
+2. Execute tennis_ball_picam_tracker.py 
+
+Ball tracking on a recorded video: 
+a) With ROS
+1. Execute tennis_ball_publisher.py
+2. Execute tennis_ball_subscriber.py
+b) Without ROS
+1. Execute ball_tracking video.py
