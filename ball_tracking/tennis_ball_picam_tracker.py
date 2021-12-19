@@ -29,7 +29,6 @@ def filter_color(rgb_image, lower_bound_color, upper_bound_color):
     mask = cv2.inRange(hsv_image, lower_bound_color, upper_bound_color)
     return mask
 
-
 def getContours(binary_image):     
     contours, hierarchy = cv2.findContours(binary_image.copy(), 
                                             cv2.RETR_EXTERNAL,
