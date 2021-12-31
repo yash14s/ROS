@@ -1,0 +1,45 @@
+For Ubuntu 20.04LTS
+
+1.Follow installation of ROS Noetic for Ubuntu from [1]:
+i sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+ii sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+iii sudo apt update
+iv sudo apt install ros-noetic-desktop-full
+v echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+vi source ~/.bashrc
+For checking installation run the command: roscore
+
+2.Configuring ROS environment [2]:
+i mkdir -p ~/catkin_ws/src
+ii cd ~/catkin_ws/
+iii catkin_make
+iv echo "source /home/yash/catkin_ws/devel/setup.bash" >> ~/.bashrc
+v source ~/.bashrc
+For confirming that it gets activated as the default repo, run: roscd
+
+3. Clone the github repo:
+i cd ~/catkin_ws/src
+ii git clone -b ros-noetic https://github.com/aniskoubaa/ros_essentials_cpp.git
+iii cd ~/catkin_ws
+iv catkin_make
+
+4.Checking if all good so far, we test if publisher-subscriber model works:
+i in a new terminal(A), run: roscore
+ii in a new terminal(B), run: rosrun ros_essentials_cpp talker_node
+iii in a new terminal(C), run: rosrun ros_essentials_cpp listener_node
+iv close terminal (B) and interrupt terminal (C)
+
+5. Checking if python nodes work:
+Create an anaconda environment 
+i conda create --name rosenv python=3.8
+ii conda activate rosenv
+iii pip install pyyaml
+iv pip install rospkg
+v in a new terminal (B), activate rosenv and run: rosrun ros_essentials_cpp talker.py
+vi in terminal (C), run: rosrun ros_essentials_cpp listener_node
+  
+
+
+Links:
+[1] http://wiki.ros.org/noetic/Installation/Ubuntu
+[2] http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment
