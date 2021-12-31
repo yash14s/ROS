@@ -1,0 +1,85 @@
+Publisher/Subscriber comm
+Whenever a new node enters the computation graph, it sends to the master 1 its name, 2 its topic name, 3 its message type.
+The Master can then connect the nodes based on their topics.
+Then node1 and node2 establish a TCP connection using the 3-way handshake mechanism. Now the comm can happen.
+
+Note: After comm starts, it is independent of the Master. The comm will resume even if master is shut down. But, we can't start a new connection without master.
+
+Tips to write Publisher:
+1. Determine the topic name.
+2. Deterine the message type.
+3. Determine the frequency of message publication.
+4. Create a publisher object with above params.
+5. Publish with the selected frequency.
+
+Tips to write Subscriber:
+1. Identify the topic name.
+2. Identify the message type.
+3. Define a callback function which is executed when mssg is received.
+4. Start listening for topic messages.
+5. Listen forever.
+
+
+Now, we write pub sub code where publisher sends the message 'Hello World' on a topic called 'chatter'
+
+Publisher python code:
+#std_msgs package contains a folder called msg, from which we import String and we use it to create publisher object
+from std_msgs.msg import String
+#Create a publisher object using rospy.Publisher class. queue_size is the size of buffer which stores all messages sent by the pub. After this limit, the queue is refreshed. This is needed so that there's a backup incase the subscriber missed some messages. 
+pub = rospy.Publisher('chatter', String, queue_size=10)
+#create and initialise a ROS node with the name 'talker'. Anon=True creates a unique ID for each node.
+rospy.init_node('talker', anonymous=True)
+#now we write the logic. rospy.Rate(freq) defines the frequency i.e. msg per sec
+rate = rospy.Rate(1)
+i=0
+while not rospy.is_shutdown():
+	hello_str = "hello world %s" % i
+	rospy.loginfo(hello_str)
+	pub.publish(hello_str)
+	rate.sleep()
+	i = i+1
+
+#Subscriber node
+from std_msgs.msg import String
+rospy.Subscriber('chatter', String, chatter_callback)
+rospy.init_node('listener', anonymous=True)
+def chatter_callback(message):
+	rospy.loginfo("I heard %s", message.data)
+#to start listening we use rospy.spin()
+rospy.spin()
+
+This has been given as an example.
+Activate rosenv 
+$cd ~/catkin_ws/src/ros_essentials_cpp/src/topic01_basics/talker_listener/scripts
+make the python code executable using rosrun - right click on talker.py -> properties -> permissions and check the allow executable box. Same for listener.py
+$ rosrun ros_essentials_cpp talker.py
+$ rosrun ros_essentials_cpp listener.py
+
+For implementing talker-listener in C++, check out ~/catkin_ws/src/ros_essentials_cpp/src/topic01_basics/talker_listener
+Observe the difference in syntax. C++ is syntactically more complex but has a more efficient runtime. After we are done with the code, we need to add the dependencies inside CMakeLists.txt for defining the build. 
+
+find_package(catkin REQUIRED COMPONENTS
+roscpp
+rospy
+std_msgs
+)
+these three along with other packages which are dependencies for the project must be added here. After this, to the bottom of the file, we add
+
+add_executable(talker_node src/topic01_basics/talker_listener/talker.cpp)
+target_link_libraries (talker_node ${catkin_LIBRARIES})
+
+where talker_node is the target node name(or whatever as per user) and src/topic01_basics/talker_listener/talker.cpp is the source file which will be compiled for creating an executable talker_node. target_link_libraries links the libraries of the node with all the libraries inside the ROS ecosystem. 
+Similarly, for the listener we add:
+add_executable(listener_node src/topic01_basics/talker_listener/listener.cpp)
+target_link_libraries (listener_node ${catkin_LIBRARIES})
+
+Finally, add the dependencies inside package.xml
+we add build_depend, build_export_depend, and exec_depend for each dependency.
+eg for roscpp: <build_depend>roscpp</build_depend>
+<build_export_depend>roscpp</build_export_depend>
+<exec_depend>roscpp</exec_depend>
+similarly for other dependencies.
+
+Now, we build the entire workspace
+i. cd to catkin_ws
+ii. $catkin_make

@@ -1,0 +1,51 @@
+Installation:
+$ sudo apt-get install ros-noetic-vision-opencv
+$ sudo apt-get install ros-noetic-usb-cam
+
+For Rpi (tested on Rpi 4 with Ubuntu Server)
+$ sudo nano /boot/firmware/config.txt
+To the bottom of the file, add: start_x=1
+Reboot
+
+$ cd ~/catkin_ws/src/ros_essentials_cpp/src/topic03_perception
+sample images are inside /images
+checkout open_copy.py, it contains basic ops.
+checkout image_structure.py - execute it line by line in terminal to see the effect of each line.
+*************************
+Image Encoding
+Hue Saturation Value (HSV) format facilitates image processing
+Hue:
+Red	0-60
+Yellow 	60-120
+Green 	120-180
+Cyan 	180-240
+Blue 	240-300
+Magenta 300-360
+
+Saturation: amount of gray in the color, 0-100
+Value: Brightness of the color 0-black, 100-most intense
+
+Open image_encoding.py  
+Open image_draw.py
+*****************************
+CvBridge - bridging images between opencv and ROS. Images in ROS are obtained from topics that subscribe to the camera's drivers. CvBridge takes these images, converts/transforms and sends them to opencv for processing and vice-versa.
+ROS image message <--> CvBridge <--> OpenCV
+
+usb_cam is a ROS package to get images from the computer camera and publish them on a ROS topic called /usb_cam/image_raw
+
+Explore image_pub_sub.py
+In main(), we create a node which subscribes to the topic "/usb_cam/image_raw" which carries the message type Image [1] which is predefined in ROS. We define a callback function where we use bridge and then we work with opencv
+1. Start up the camera
+$ rosrun usb_cam usb_cam_node _pixel_format:=yuyv
+2. Run predefined subscriber 
+$ rosrun image_view image_view image:=usb_cam/image_raw
+3. Test image_pub_sub.py
+$ rosrun ros_essentials_cpp image_pub_sub.py
+*****************************
+
+
+
+[1] https://docs.ros.org/en/melodic/api/sensor_msgs/html/msg/Image.html
+
+
+

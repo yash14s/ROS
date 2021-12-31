@@ -1,0 +1,35 @@
+ROS installation is in /opt/ros/noetic
+ROS project is called a package. Package is defined inside a workspace which is where we create all the programs of a ROS project.
+
+1.Create a new ROS package:
+i cd catkin_ws/src
+ii catkin_create_pkg ros_practice std_msgs rospy roscpp
+where ros_practice is the name of the package, and std_msgs, rospy and roscpp are the dependencies in this case.
+
+2. Compile the newly created package
+i cd.. (cd to catkin_ws)
+ii catkin_make
+Inside ~/catkin_ws/src, ros_practice is created.
+ros_practice contains include, src. Inside include we put the libraries and src contains source code.
+
+3.Testing:
+i from ros_essentials, copy talker.cpp and listener.cpp and paste them here.
+ii modify CMakeList such that the name of node is unique. Refer to ros_essential_cpp's CMakeList
+iii cd to catkin_ws
+iv catkin_make
+
+4.To execute:
+i ensure roscore is running in terminal(A)
+ii in terminal(B) run: rosrun ros_practice talker_ros_node
+iii in terminal(C) run: rosrun ros_practice listener_ros_node
+
+5.Deleting a ROS package (not elegant method)
+i cd to catkin_ws
+ii delete the build and devel folders
+iii $ catkin_make clean
+iv $ catkin_make
+
+
+Notes:
+CMakeLists.txt file describes how to build the code and where to install it. It's the input to the CMake build system for building software packages.
+package.xml is used to describe the package and build its dependencies. It's automatically generated 

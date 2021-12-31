@@ -1,0 +1,20 @@
+1. Inside Rpi's bashrc (gedit ~/.bashrc)
+export ROS_MASTER_URI=http://localhost:11311
+export ROS_HOSTNAME=192.168.29.177
+export ROS_IP=192.168.29.177
+
+where http://localhost:11311 is where roscore runs, 192.168.29.177 is Rpi's IP
+ 
+2. Inside PC's bashrc
+export ROS_MASTER_URI=http://192.168.29.177:11311
+export ROS_HOSTNAME=192.168.29.179
+export ROS_IP=192.168.29.179
+
+3. To test
+In Rpi - $ roscore
+$ rosrun turtlesim turtlesim_node
+$ rostopic list
+
+In PC - $rostopic list
+
+

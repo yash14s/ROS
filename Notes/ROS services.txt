@@ -1,0 +1,88 @@
+So far we looked at the pub-sub model. Now it's time for the server-client paradigm.
+Client sends a request, and Server sends back a response. Unlike pub-sub, this is a two way data exchange. It is SYNCHRONOUS, i.e. client must wait for response before continuing. Comm happens via SERVICES.
+
+$ rosservice list  - gives list of all active rosservices
+$ rosservice info servicename - gives info related to the service 'servicename'
+eg- $ rosrun turtlesim turtlesim_node
+    $ rosservice list   let's consider the service '/spawn'
+    $ rosservice info /spawn  note that the message type is different than that of a topic, coz we have a request-response mechanism here and hence the message must provide functionality for both req and resp.
+
+$ rossrv info package_name/messagetype  - like rosmsg show package_name/messagetype, shows the service definition.
+eg- $ rossrv info turtlesim/Spawn 
+output: 
+float32 x
+float32 y
+float32 theta
+string name
+---
+string name
+
+here, the content above '---' is for request, and below is for response.
+
+To call a service-
+$ rosservice call servicename args
+eg- $ rosservice call /spawn 1 1 0 turtle2
+
+Creating a custom service
+We'll create a service for adding two integers. The client will send, server will compute. So we have 2 messages, one for sending and one for receiving
+Steps:
+1. Define the service message
+i. Create a directory called 'srv' inside ros_practice. Inside srv we create our service file. Let's name this 'AddTwoints.srv'.
+
+ii. Inside AddTwoints.srv, we put the following content for the service definition:
+
+int64 a
+int64 b
+---
+int64 sum
+
+iii. Update dependencies in package.xml
+if not present, add the following lines-
+
+<build_depend>message_generation</build_depend>
+<exec_depend>message_runtime</exec_depend>
+
+these were already added for custom msg generation
+
+iv. Update dependencies in CMakeLists.txt
+
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  rospy
+  std_msgs
+  message_generation
+)
+
+add_service_files(
+  FILES
+  AddTwoints.srv
+)
+
+v. cd ~/catkin_ws
+   catkin_make
+
+Confirm service creation by going to ~/catkin_ws/devel/include/ros_practice here we can see .h files created for the service.
+$ rossrv show ros_practice/AddTwoints
+
+2. Create ROS server node. This is analogous to the subscriber node.
+code in src folder of ros_practice - add_server.py
+General structure - 
+first, we import all the 3 header files which were created. Then we initialise the server node.
+rospy.Service('add_two_ints', AddTwoints, handle_add_two_ints) 
+creates a service associated with the server node, with service name given as 'add_two_ints', AddTwoints represents the service type, handle_add_two_ints is the callback function which executes everytime a request message comes.
+
+3. Create ROS client node. Analogous to the publisher node.
+code in src folder of ros_practice - add_client.py
+General structure - 
+first, we import all the 3 header files which were created. 
+rospy.wait_for_service('add_two_ints')
+client can't send request unless the service defined in the server is up. So this command waits till we have the service ready.
+add_two_ints = rospy.ServiceProxy('add_two_ints', AddTwoints) creates a Service Proxy, which is responsible for sending the request messages on the same service defined in the server node. 
+
+4. Execute the service
+$ rosrun ros_practice add_server.py
+
+5. Consume the service by the client
+$ rosrun ros_practice add_client.py 2 5
+
+This is a simple application, can use client server when some computationally expensive algorithms are to be run. The client node can send data to server, and then the server can perform the computation and send back the response.

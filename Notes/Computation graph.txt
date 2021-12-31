@@ -1,0 +1,46 @@
+ROS computaton graph is a chart which talks about the different ways of comm b/w 2 nodes.
+1. Topic - async, unidirectional; follows a publisher-subscriber model. Used for continous data exchange.
+2. Service - sync, bidirectional; client-server model. Client requests and server responds.
+3. Action - async, bidirectional; client-server model. Since async, client can run other tasks without waiting for response.
+
+$rosnode list - list all ros nodes in a computation graph
+$rostopic list - list all topics in a computation graph
+
+rosrun - ROS command to run any node.
+syntax: $rosrun package_name node_name
+eg: $rosrun turtlesim turtlesim_node
+this creates a robot in turtlesim. To move this bot, we execute another node:
+$rosrun turtlesim turtle_teleop_key This enables us to control bot from keyboard
+
+$rosnode info /turtlesim returns all info related to turtlesim node
+In the output, we observe that it's subscribed to /turtle1/cmd_vel which is basically the topic which conveys keyboard commands from teleop node to the bot in turtle_sim node.
+
+$rostopic info /turtle1/cmd_vel returns all info related to turtle1/cmd_vel
+
+$rostopic echo topicname shows output of the message content of the topic in the terminal.
+eg: $rostopic echo /turtle1/cmd_vel
+
+Message type
+/turtle1/cmd_vel is listed as [geometry_msgs/Twist]
+Here, geometry_msgs/Twist is a message. Any message in ROS has the syntax package/messagename 
+In this case package name where the message is located is geometry_msgs and name of the message is Twist. It is a predefined message that comes as a part of ROS installation. It exists in /opt/ros/noetic/share/geometry_msgs
+$rosmsg show geometry_msgs/Twist displays the content of the message Twist.
+
+Publish a message on a topic using cmd
+$rostopic pub -r 10 /turtle1/cmd_vel geometry_msgs/Twist '{linear: {x: 0.1, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}'
+where -r 10 -> repeat for 10 times; /turtle1/cmd_vel -> topic; geometry_msgs/Twist -> message type; '{linear: {x: 0.1, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}' -> data
+for this ground robot, we can only move in linear-x and angular-z. If it were a drone, we could move anywhere.
+
+$rosrun rqt_graph rqt_graph plots the complete computation graph to summarise the ROS ecosystem
+
+turtle1/pose is another topic in the list, it publishes bot's info. 
+
+So using ROS, we can send commands to the robot, and receive data back from it. We can communicate with any node in the ROS computation graph.
+
+
+
+
+
+
+
+

@@ -1,0 +1,45 @@
+Need: For integrating microcontrollers and embedded systems into ROS. It defines all drivers necessary for communicating with the new hardware.
+
+rosserial allows new electronic hardware to directly talk to ROS. It is a protocol for wrapping standard ROS serialized messages and multiplexing multiple topics and services over a character device such as a serial port or a network socket. 
+
+rosserial Client Libraries
+To get ROS on new hardware, client libraries were developed. rosserial_client is a generic client-side rosserial implementation and can run on any processor for which we have a ANSI C++ compiler and a serial port connection to a computer running ROS.
+There are also specific client libraries such as rosserial_arduino, rosserial_embeddedlinux, rosserial_windows ,rosserial_mbed , rosserial_tivac , rosserial_stm32, ros_teensy
+
+ROS-SIDE interfaces
+On the ROS side, we need a node which makes the interface between ROS and rosserial_arduino. For this, we have: 
+a. rosserial_python which is a python-based implementation and is easy to use
+b. rosserial_server which is a C++ implementation which has less functionalities but is faster
+
+	PC	    ROS messages	Arduino
+rosserial_python  <------------->   rosserial_arduino
+
+
+i. Installing Arduino IDE:
+ Download latest ARM Linux 64-bit arduino IDE from [1]. It will get downloaded in Downloads. 
+ $ cd ~/Downloads
+ $ tar -xf arduino-1.8.15-linuxaarch64.tar.xz
+ $ Move the extracted folder to the home directory
+
+ii. Installing rosserial:
+ $ sudo apt-get install ros-noetic-rosserial
+ $ sudo apt-get install ros-noetic-rosserial-arduino 
+iii. Generate libraries required to use ROS with arduino:
+ $ roscore
+ $ cd /home/ubuntu/arduino-1.8.15/libraries
+ $ rosrun rosserial_arduino make_libraries.py .
+
+iii. Testing hello world program:
+Launch the IDE
+ $ cd
+ $ cd arduino-1.8.5
+ $ ./arduino
+Upload Hello World example to the arduino
+Start roscore and run server side code
+ $ roscore
+ $ rosrun rosserial_python serial_node.py /dev/ttyACM0
+ $ rostopic list
+ $ rostopic echo /chatter
+
+
+[1] https://www.arduino.cc/en/software 

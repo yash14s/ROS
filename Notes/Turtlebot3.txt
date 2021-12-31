@@ -1,0 +1,55 @@
+1. Installation of Turtlebot3 core packages:
+i. $ sudo apt-get update
+ii. $ sudo apt-get upgrade
+iii. $ cd ~/catkin_ws/src
+iv. $ git clone https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git -b noetic-devel
+v. $ git clone https://github.com/ROBOTIS-GIT/turtlebot3.git -b noetic-devel 
+This installs all the core packages of turtlebot3
+vi. cd to catkin_ws
+vii. $ catkin_make
+
+2. Installation of Turtlebot3 simulator
+Prerequisite - step 1 must be complete.
+i. $ cd ~/catkin_ws/src
+ii. $ git clone https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
+iii. cd to catkin_ws
+iv. $ catkin_make
+v. $ conda activate rosenv
+vi. $ pip install defusedxml
+ 
+3. Setting bashrc
+i. gedit ~/.bashrc
+ii. add the following lines:
+alias burger='export TURTLEBOT3_MODEL=burger'
+alias waffle='export TURTLEBOT3_MODEL=waffle'
+alias tb3fake='roslaunch turtlebot3_fake turtlebot3_fake.launch'
+alias tb3teleop='roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch'
+alias tb3='roslaunch turtlebot3_gazebo turtlebot3_empty_world.launch'
+alias tb3maze='roslaunch turtlebot3_gazebo turtlebot3_world.launch'
+alias tb3house='roslaunch turtlebot3_gazebo turtlebot3_house.launch'
+export TURTLEBOT3_MODEL=waffle
+export SVGA_VGPU=0
+iii. source ~/.bashrc
+
+***************
+OVERVIEW:
+turtlebot3 comes with a lot of features, allows us to work in various simulation environments. Using aliases that we defined in the bashrc, let's explore:
+
+$ tb3
+$ tb3teleop
+$ tb3fake
+$ tb3maze
+$ tb3house
+
+Laser scanner, OpenCV, SLAM possible with turtlebot3
+***************
+
+$ tb3maze  - opens up the gazebo simulator, shows turtlebot3 inside a maze
+$ tb3teleop - can control the bot using wasdx
+$ roslaunch turtlebot3_gazebo turtlebot3_gazebo_rviz.launch - opens the ROS visualisation tool. By default shows the laser scanner output. use left click to rotate, right to zoom, shift+left click to drag.
+$ rosnode list - here, the gazebo node represents the bot.
+$ rosnode info /gazebo
+$ rostopic list
+$ rosservice list
+$ rosservice call /gazebo/reset_simulation resets the simulation
+

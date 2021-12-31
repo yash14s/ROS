@@ -1,0 +1,94 @@
+Objective: Develop a cleaning robot.
+
+We use the Twist message type for motion.
+*****************
+TYPES OF MOTION
+1. Move in a straight line:
+Linear: x:speed, y:0, z:0
+Angular: x:0, y:0, z:0
+
+2. Rotate in place:
+Linear: x:0, y:0, z:0
+Angular: x:0, y:0, z:speed   (yaw) 
+
+3. Go to goal:
+Motion from point A to B
+Linear: x:f(distance), y:0, z:0
+Angular: x:0, y:0, z:f(angle)
+We use a Proportional controller for this (P of PID)
+
+4. Spiral:
+Linear: x:f(time), y:0, z:0
+Angular: x:0, y:0, z:constant
+******************
+
+CLEANING APPLICATION:
+1. Understand the topics and message to be used:
+working with turtlesim, 
+$ rosrun turtlesim turtlesim_node
+$ rosnode list
+$ rostopic list
+$ rostopic info /turtle1/cmd_vel
+$ rosmsg show geometry_msgs/Twist
+$ rostopic info /turtle1/pose
+$ rosmsg show turtlesim/Pose
+
+2. Import libraries:
+i. Python:
+import rospy
+from geometry_msgs.msg import Twist
+from turtlesim.msg import Pose
+ii. C++
+#include "ros/ros.h"
+#include "geometry_msgs/Twist.h"
+#include "turtlesim/Pose.h"
+
+3. Divide and Conquer approach:
+i. develop a function for straight line motion
+ii. develop a function for rotation in place
+iii. develop a function for travelling to a target location
+iv. develop a function for spiral motion
+v. integrate all functions
+
+code in ros_practice/src/cleaning_bot.py
+
+***********
+LAUNCH FILE
+Launch file is used to execute multiple ros nodes using a single file, since it's not practical to run a new terminal for each rosrun command. It even starts the ros master on its own.
+content:
+
+<launch>
+  <node name="turtlesim" pkg="turtlesim" type="turtlesim_node" />
+  <node name="turtlesim_cleaning_bot" pkg="ros_practice" type="cleaning_robot.py" />
+</launch>
+
+$ roslaunch ros_practice cleaning_robot.launch 
+
+***********
+Parameters with launch file:
+In cleaning_robot.py: choice = rospy.get_param("input")
+
+In launch file:
+<launch>
+  <param name="input" value="1.0"/>
+  <node name="turtlesim" pkg="turtlesim" type="turtlesim_node" />
+  <node name="turtlesim_cleaning_bot" pkg="ros_practice" type="cleaning_robot.py" />
+</launch>
+
+now we can modify value="1.0"
+
+*************************
+NOT WORKING 
+If there were arguments(like that in the assignment)
+<launch>
+  <node name="turtlesim" pkg="turtlesim" type="turtlesim_node" />
+  <node name="turtlesim_cleaning_bot" pkg="ros_practice" type="cleaning_robot.py" args="$(arg choice)" />
+</launch>
+$ roslaunch ros_practice cleaning_robot.launch choice:=1
+*****************************
+
+
+
+[1] http://wiki.ros.org/roslaunch/XML
+[2] http://wiki.ros.org/roslaunch/XML/arg
+[3] https://answers.ros.org/question/303339/adding-arguments-via-command-line-during-roslaunch/

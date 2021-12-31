@@ -1,0 +1,77 @@
+Cameras only provide 2-D input, no idea about depth/distance.
+Laser scanners measure distance to obstacles using TOF principle. Applications: SLAM, obstacle avoidance, navigation
+
+Characterstics:
+Min angle	: start angle of the scan
+Max angle	: end angle of the scan
+Angular resolution: angular distance between measurements
+Time increment	: time b/w measurements
+Scan time	: time b/w two scans
+Min range	: min observable range value
+Max range	: max observable range value 
+List of ranges	: list of all measurements in a scan
+List of intensities: list of all intensities in a scan
+
+**************************
+Using Asus Live Pro RGBD camera
+1. Getting dependencies:
+i. $ sudo apt-get update
+ii. $ sudo apt-get install ros-noetic-openni2-*
+2. Now attach the camera via USB and run the command:
+$ roslaunch openni2 launch openni2.launch
+Check if everything is working by running 
+$ rostopic list	
+The topic /camera/rgb/image_raw is the one we're interested in. To view the image on this topic, run 
+$ rosrun image_view image_view image:=/camera/rgb/image_raw 
+For viewing the depth image:
+$ rosrun image_view image_view image:=/camera/depth/image_raw
+
+Now, we need to convert the depth image to laser scan in order to get the distance values to obstacles. For this purpose we use:
+$ rosrun depthimage_to_laserscan depthimage_to_laserscan image:=/camera/depth/image_raw
+Now if we do a $ rostopic list, we get topic /scan. Check its content:
+$ rostopic echo /scan
+
+Checkout the launch file present in ros_essentials_cpp/src/topic03_perception/launch
+$ roslaunch ros_essentials_cpp depth_image_to_laser.launch
+
+Scan data is an array containing distance values. To make visualsing easier, use rviz
+i. $ rosrun rviz rviz
+ii. In the Frame option,select camera_link
+iii. Click on 'Add' button, select LaserScan 
+iv. Select the topic /scan
+***************************
+
+***************************
+Using Hukoyo URG 04-LX laser range finder
+i. $ sudo apt-get install ros-noetic-urg-node
+ii. $ roscore
+iii. $ rosrun urg_node urg_node
+iv. Check if /scan topic is available by running $ rostopic list
+v. $ rostopic echo /scan
+vi. $ rosrun tf static_transform_publisher 0.0 0.0 0.0 0.0 0.0 0.0 1.0 map laser 10
+vii. $ rosrun rviz rviz
+***************************
+
+***************************
+Save laser scan messages in a bag file and replay
+rosbag is a utility in ros that allows to record messages published by topics into a file, and replay them again. This is used to develop and test algorithms to replay existing scenarios. Essentially we're simulating a laser scanner.
+i. $ roscore
+ii. $ rosrun urg_node urg_node
+iii. $ rosrun tf static_transform_publisher 0.0 0.0 0.0 0.0 0.0 0.0 1.0 map laser 10
+iv. Now we create an empty dir for storing bag files. The location doesn't matter. For convenience, In terminal(A) cd to ros_practice
+ $ mkdir bagfiles
+ $ cd bagfiles
+v. $ rosbag record -a    this starts to record messages sent by all topics. Once done recording, close the terminal to save.
+vi. A log file is created with extension .bag let's say it's saved with name filename.bag
+ $ rosbag info filename.bag 
+vii. In a new terminal(B), $ rosrun rviz rviz
+viii. In terminal(A), $ rosbag play filename.bag
+ix. Play the /scan topic in rviz to visualise
+****************************
+
+****************************
+Write a subscriber node for /scan topic
+Explore scan_subscriber.py which is present in /home/ubuntu/catkin_ws/src/ros_essentials_cpp/src/topic04_perception02_laser
+
+i. Start the camera or the bag file
+ii. $ rosrun ros_essentials_cpp scan_subscriber.py

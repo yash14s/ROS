@@ -1,0 +1,61 @@
+For intro check ROS Topics
+
+Objective: Create a custom message called IoTSensor Message with the fields - id, name,temperature, humidity.
+1. cd to the package, in this case, $cd ~/catkin_ws/src/ros_essentials_cpp
+2. make a new folder called 'msg' 
+3. inside msg, create a new file with the extension '.msg'. In this case, 'IoTSensor.msg'
+4. Inside this file, add the fields (one per line)
+int32 id
+string name
+float32 temperature
+float32 humidity
+checkout [1] for more info on data-types.
+
+5. Update CMakeLists.txt. 
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  rospy
+  std_msgs
+  message_generation
+)
+we added message_generation, which allows us to create a custom message.
+
+add_message_files(
+   FILES
+   IoTSensor.msg 
+)
+added IoTSensor.msg
+
+****For ros_practice follow [2]:
+catkin_package(
+  INCLUDE_DIRS include
+  LIBRARIES ros_practice
+  CATKIN_DEPENDS message_runtime roscpp rospy std_msgs
+  DEPENDS system_lib
+)
+
+generate_messages(
+   DEPENDENCIES
+   std_msgs
+ )
+*****
+
+6. Update package.xml
+add:
+<build_depend>message_generation</build_depend>
+<exec_depend>message_runtime</exec_depend>
+
+7. cd to catkin_ws
+8. $ catkin_make
+9. to confirm, $ rosmsg show ros_essentials_cpp/IoTSensor
+
+Now we create a publisher subscriber model to implement this. 
+$ cd ~/catkin_ws/src/ros_essentials_cpp/src/topic01_basics/iot_sensor
+check out the implementation, which is a modification of the talker listener.
+$ rosrun ros_essentials_cpp iot_sensor_publisher.py
+in a separate terminal, run rostopic list, rosnode list, rostopic info etc to explore. 
+
+[1] http://wiki.ros.org/msg
+[2] https://answers.ros.org/question/271620/importerror-no-module-named-xxxxmsg/
+
+
