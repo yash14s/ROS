@@ -36,11 +36,3 @@ $rosrun rqt_graph rqt_graph plots the complete computation graph to summarise th
 turtle1/pose is another topic in the list, it publishes bot's info. 
 
 So using ROS, we can send commands to the robot, and receive data back from it. We can communicate with any node in the ROS computation graph.
-
-
-
-
-
-
-
-
