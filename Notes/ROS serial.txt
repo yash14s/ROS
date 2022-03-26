@@ -28,7 +28,8 @@ iii. Generate libraries required to use ROS with arduino:
  $ roscore
  $ cd /home/ubuntu/arduino-1.8.15/libraries
  $ rosrun rosserial_arduino make_libraries.py .
-
+ The ROS ecosystem lives in ~/arduino-1.8.15/libraries/ros_lib
+ 
 iii. Testing hello world program:
 Launch the IDE
  $ cd
